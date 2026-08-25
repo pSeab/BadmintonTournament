@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จอมยุทธแบดมินตัน — ศึกแห่งศักดิ์ศรี</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;600;700;900&family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+:root{--bg-deep:#0d0a0a;--bg-dark:#1a1210;--bg-card:#1e1612;--bg-card-hover:#2a1f18;--gold:#d4a843;--gold-light:#f0d080;--gold-dim:#8b7530;--red:#c41e3a;--red-dark:#8b1428;--red-light:#e84560;--crimson:#a01030;--text-primary:#f0e4d0;--text-secondary:#b8a890;--text-dim:#786858;--border:#3d2e22;--border-gold:rgba(212,168,67,.3);--shadow-gold:0 0 20px rgba(212,168,67,.15);--radius-sm:6px;--radius-md:12px;--radius-lg:20px;--font-display:'Noto Serif Thai',serif;--font-body:'Noto Sans Thai',sans-serif;--nav-height:64px}
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}html{scroll-behavior:smooth}
+body{font-family:var(--font-body);background:var(--bg-deep);color:var(--text-primary);min-height:100vh;overflow-x:hidden;line-height:1.6}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 20% 50%,rgba(196,30,58,.04) 0%,transparent 50%),radial-gradient(ellipse at 80% 20%,rgba(212,168,67,.03) 0%,transparent 50%);pointer-events:none;z-index:0}
+#loading-screen{position:fixed;inset:0;z-index:10000;background:var(--bg-deep);display:flex;align-items:center;justify-content:center;transition:opacity .6s,visibility .6s}
+#loading-screen.hidden{opacity:0;visibility:hidden}
+.loading-inner{text-align:center}.loading-emblem img{width:140px;height:auto;animation:pulse-glow 2s ease-in-out infinite}
+.loading-text{font-family:var(--font-display);font-size:1.2rem;color:var(--gold);letter-spacing:.15em;margin:1.5rem 0}
+.loading-bar{width:200px;height:3px;background:var(--border);border-radius:3px;overflow:hidden;margin:0 auto}
+.loading-bar-fill{width:0;height:100%;background:linear-gradient(90deg,var(--red),var(--gold));border-radius:3px;animation:loading-fill 1.8s ease-in-out forwards}
+@keyframes loading-fill{0%{width:0}50%{width:70%}100%{width:100%}}
+@keyframes pulse-glow{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.7;transform:scale(1.08)}}
+@keyframes rotate-slow{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+@keyframes float-reverse{0%,100%{transform:translateY(0)}50%{transform:translateY(8px)}}
+@keyframes cloud-drift{0%{transform:translateX(-100%)}100%{transform:translateX(calc(100vw + 100%))}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeInPage{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInPair{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
+@keyframes toastOut{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(40px)}}
+@keyframes statGrow{0%{transform:scale(1)}50%{transform:scale(1.15)}100%{transform:scale(1)}}
+#main-nav{position:fixed;top:0;left:0;right:0;height:var(--nav-height);z-index:1000;background:rgba(13,10,10,.88);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-inner{max-width:1200px;margin:0 auto;height:100%;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem}
+.nav-brand{display:flex;align-items:center;gap:.6rem}.brand-icon svg{width:28px;height:28px}
+.brand-text{font-family:var(--font-display);font-weight:700;font-size:1.15rem;color:var(--gold);letter-spacing:.05em}
+.nav-links{display:flex;gap:.25rem}
+.nav-btn{background:none;border:none;color:var(--text-secondary);font-family:var(--font-body);font-size:.875rem;font-weight:500;padding:.5rem 1rem;border-radius:var(--radius-sm);cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem}
+.nav-btn:hover{color:var(--text-primary);background:rgba(255,255,255,.05)}.nav-btn.active{color:var(--gold);background:rgba(212,168,67,.1)}
+.nav-icon{font-size:1rem}
+.nav-add-btn{width:36px;height:36px;border-radius:50%;border:1.5px solid var(--gold-dim);background:rgba(212,168,67,.1);color:var(--gold);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.nav-add-btn:hover{background:var(--gold);color:var(--bg-deep);transform:scale(1.1)}
+.page{display:none;padding-top:var(--nav-height);min-height:100vh;position:relative;z-index:1}.page.active{display:block;animation:fadeInPage .4s}
+.page-header{text-align:center;padding:3rem 1.5rem 2rem}
+.page-title{font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--gold);margin-bottom:.5rem;letter-spacing:.05em}
+.page-desc{color:var(--text-secondary);font-size:.95rem}
+.hero{position:relative;min-height:88vh;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:2rem}
+.hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 30%,rgba(196,30,58,.12) 0%,transparent 60%),radial-gradient(ellipse at 50% 80%,rgba(212,168,67,.08) 0%,transparent 50%),linear-gradient(180deg,var(--bg-deep) 0%,#1a1008 50%,var(--bg-deep) 100%)}
+.hero-mountains{position:absolute;bottom:0;left:0;right:0;z-index:1;pointer-events:none}
+.hero-mountains svg{width:100%;height:auto;display:block}
+.hero-clouds{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:1}
+.hero-cloud-layer{position:absolute;width:100%;height:100%}
+.hero-ink{position:absolute;top:10%;right:5%;width:300px;height:300px;opacity:.06;z-index:0;pointer-events:none;animation:float 8s ease-in-out infinite}
+.hero-ink-2{position:absolute;bottom:15%;left:3%;width:250px;height:250px;opacity:.05;z-index:0;pointer-events:none;animation:float-reverse 10s ease-in-out infinite}
+.hero-content{position:relative;text-align:center;z-index:2}
+.hero-emblem{margin-bottom:2rem;animation:fadeInDown .8s ease}
+.hero-emblem img{max-width:280px;height:auto;filter:drop-shadow(0 0 40px rgba(212,168,67,.4))}
+.hero-badge{display:inline-block;font-family:var(--font-display);font-size:.85rem;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.25);padding:.35rem 1.2rem;border-radius:50px;letter-spacing:.3em;margin-bottom:1.5rem;animation:fadeInDown .8s ease .2s both}
+.hero-title{font-family:var(--font-display);margin-bottom:1.5rem;animation:fadeInUp .8s ease .3s both}
+.title-line-1{display:block;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:900;color:var(--text-primary);line-height:1.1;text-shadow:0 0 60px rgba(212,168,67,.2)}
+.title-line-2{display:block;font-size:clamp(1.5rem,3.5vw,2.5rem);font-weight:600;color:var(--gold);line-height:1.3;letter-spacing:.15em}
+.hero-subtitle{font-size:1.05rem;color:var(--text-secondary);max-width:500px;margin:0 auto 2.5rem;animation:fadeInUp .8s ease .5s both}
+.hero-stats{display:flex;align-items:center;justify-content:center;gap:2rem;margin-bottom:2.5rem;animation:fadeInUp .8s ease .7s both}
+.hero-stat-value{font-family:var(--font-display);font-size:2.2rem;font-weight:900;color:var(--gold);line-height:1}
+.hero-stat-label{font-size:.8rem;color:var(--text-dim);margin-top:.3rem;letter-spacing:.08em}
+.hero-stat-divider{width:1px;height:36px;background:var(--border)}
+.hero-cta{display:inline-flex;align-items:center;gap:.6rem;background:linear-gradient(135deg,var(--red),var(--crimson));color:white;border:none;padding:.9rem 2.2rem;font-family:var(--font-body);font-size:1rem;font-weight:600;border-radius:50px;cursor:pointer;transition:all .3s;animation:fadeInUp .8s ease .9s both;box-shadow:0 4px 20px rgba(196,30,58,.3)}
+.hero-cta:hover{transform:translateY(-2px);box-shadow:0 6px 30px rgba(196,30,58,.5)}
+.section-divider-gold{width:200px;margin:0 auto 2rem}.section-divider-gold svg{width:100%;height:auto}
+.section{max-width:1200px;margin:0 auto;padding:2rem 1.5rem 3rem}
+.section-header{display:flex;align-items:center;gap:.8rem;margin-bottom:1.5rem}
+.section-icon{font-size:1.3rem}.section-title{font-family:var(--font-display);font-size:1.3rem;font-weight:700;color:var(--gold);white-space:nowrap}
+.section-line{flex:1;height:1px;background:linear-gradient(90deg,var(--border-gold),transparent)}
+.recent-matches{display:flex;flex-direction:column;gap:.75rem}
+.match-card-mini{display:flex;align-items:center;justify-content:space-between;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem 1.25rem;transition:all .2s;position:relative;overflow:hidden}
+.match-card-mini::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--border-gold),transparent)}
+.match-card-mini:hover{border-color:var(--border-gold);background:var(--bg-card-hover)}
+.match-mini-fighters{display:flex;align-items:center;gap:1rem}.match-mini-fighter{display:flex;align-items:center;gap:.5rem}
+.mini-avatar{width:32px;height:32px;border-radius:50%;object-fit:cover;border:1.5px solid var(--border)}
+.mini-avatar-placeholder{width:32px;height:32px;border-radius:50%;background:var(--bg-card-hover);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.75rem}
+.mini-name{font-weight:600;font-size:.9rem}.match-mini-vs{font-family:var(--font-display);font-weight:700;font-size:.8rem;color:var(--red);background:rgba(196,30,58,.1);padding:.2rem .6rem;border-radius:4px}
+.match-mini-result{font-size:.8rem;color:var(--text-dim)}.match-mini-winner{color:var(--gold);font-weight:600}
+.top-fighters{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem}
+.top-fighter-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1.25rem;display:flex;align-items:center;gap:1rem;cursor:pointer;transition:all .25s;position:relative;overflow:hidden}
+.top-fighter-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold-dim),transparent);opacity:0;transition:opacity .3s}
+.top-fighter-card:hover{border-color:var(--gold-dim);transform:translateY(-2px);box-shadow:var(--shadow-gold)}.top-fighter-card:hover::after{opacity:1}
+.top-rank{font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--gold-dim);min-width:2rem;text-align:center}
+.top-rank.rank-1{color:var(--gold);text-shadow:0 0 10px rgba(212,168,67,.4)}.top-rank.rank-2{color:#c0c0c0}.top-rank.rank-3{color:#cd7f32}
+.top-info{flex:1;min-width:0}.top-name{font-weight:700;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top-title{font-size:.75rem;color:var(--text-dim)}.top-wins{font-family:var(--font-display);font-weight:700;font-size:.9rem;color:var(--gold)}
+.fighters-grid{max-width:1200px;margin:0 auto;padding:0 1.5rem 3rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.25rem}
+.fighter-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:all .3s;position:relative;cursor:pointer}
+.fighter-card:hover{border-color:var(--gold-dim);box-shadow:var(--shadow-gold);transform:translateY(-4px)}
+.fighter-card-image{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden;background:linear-gradient(135deg,var(--bg-dark),var(--bg-card-hover))}
+.fighter-card-image img{width:100%;height:100%;object-fit:cover;transition:transform .4s}
+.fighter-card:hover .fighter-card-image img{transform:scale(1.05)}
+.fighter-card-image-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:5rem;background:linear-gradient(135deg,var(--bg-card-hover),var(--bg-dark))}
+.fighter-card-rank{position:absolute;top:.75rem;left:.75rem;width:32px;height:32px;border-radius:50%;background:rgba(13,10,10,.85);border:2px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:900;color:var(--gold);font-family:var(--font-display);backdrop-filter:blur(4px)}
+.fighter-card-rank.rank-1{border-color:#ffd700;background:rgba(255,215,0,.2)}.fighter-card-rank.rank-2{border-color:#c0c0c0;background:rgba(192,192,192,.2)}.fighter-card-rank.rank-3{border-color:#cd7f32;background:rgba(205,127,50,.2)}
+.fighter-card-actions{position:absolute;top:.75rem;right:.75rem;display:flex;gap:.4rem}
+.fighter-action-btn{width:28px;height:28px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(13,10,10,.7);color:var(--text-dim);font-size:.75rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(4px)}
+.fighter-action-btn:hover{border-color:var(--gold-dim);color:var(--gold);background:rgba(13,10,10,.9)}.fighter-action-btn.delete:hover{border-color:var(--red);color:var(--red)}
+.fighter-card-info{padding:1rem 1.25rem .75rem}
+.fighter-card-name{font-family:var(--font-display);font-size:1.15rem;font-weight:700;color:var(--text-primary);line-height:1.2}
+.fighter-card-nickname{font-size:.8rem;color:var(--gold-dim);margin-top:.2rem}
+.fighter-style-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.7rem;font-weight:600;padding:.2rem .6rem;border-radius:50px;margin-top:.5rem;border:1px solid}
+.fighter-card-stats-mini{display:flex;justify-content:center;gap:.5rem;padding:.6rem 1.25rem;flex-wrap:wrap}
+.fighter-stat-mini{display:flex;align-items:center;gap:.2rem;font-size:.65rem;color:var(--text-dim);background:var(--bg-dark);padding:.2rem .5rem;border-radius:4px}
+.fighter-stat-mini-val{font-weight:700;color:var(--text-secondary)}
+.fighter-card-footer{padding:.65rem 1.25rem;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;background:rgba(0,0,0,.15)}
+.fighter-record{display:flex;gap:.75rem}.record-item{display:flex;align-items:center;gap:.25rem;font-size:.75rem}
+.record-value{font-weight:700;color:var(--gold)}.record-label{color:var(--text-dim)}
+.fighter-power{font-family:var(--font-display);font-weight:900;font-size:1rem;color:var(--gold)}
+.fighter-power-label{font-size:.6rem;color:var(--text-dim);font-family:var(--font-body);font-weight:400}
+.detail-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:1rem}
+.detail-overlay.open{display:flex}
+.detail-modal{background:var(--bg-dark);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:420px;max-height:90vh;overflow-y:auto;position:relative;animation:fadeInUp .3s}
+.detail-modal-header{position:relative;width:100%;aspect-ratio:1/1;overflow:hidden}
+.detail-modal-header img{width:100%;height:100%;object-fit:cover}
+.detail-modal-header-placeholder{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:6rem;background:linear-gradient(135deg,var(--bg-card-hover),var(--bg-dark))}
+.detail-modal-close{position:absolute;top:.75rem;right:.75rem;width:36px;height:36px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(13,10,10,.7);color:white;font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);transition:all .2s}
+.detail-modal-close:hover{background:var(--red);border-color:var(--red)}
+.detail-modal-body{padding:1.25rem}
+.detail-modal-name{font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--text-primary)}
+.detail-modal-nickname{font-size:.9rem;color:var(--gold-dim);margin-top:.2rem}
+.detail-modal-body .fighter-style-badge{margin-top:.6rem}
+.detail-stats-full{margin-top:1.25rem}
+.detail-stat-row{display:flex;align-items:center;gap:.6rem;margin-bottom:.75rem}
+.detail-stat-icon{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.detail-stat-icon.atk{background:rgba(196,30,58,.15);color:#e84560}
+.detail-stat-icon.def{background:rgba(37,99,235,.15);color:#60a5fa}
+.detail-stat-icon.spd{background:rgba(22,163,74,.15);color:#4ade80}
+.detail-stat-icon.tec{background:rgba(147,51,234,.15);color:#c084fc}
+.detail-stat-icon.sta{background:rgba(217,119,6,.15);color:#fbbf24}
+.detail-stat-icon.mnt{background:rgba(8,145,178,.15);color:#22d3ee}
+.detail-stat-label{font-size:.8rem;color:var(--text-dim);min-width:48px}
+.detail-stat-bar{flex:1;height:8px;background:var(--bg-card);border-radius:4px;overflow:hidden}
+.detail-stat-bar-fill{height:100%;border-radius:4px;transition:width .8s ease}
+.detail-stat-val{font-size:.85rem;font-weight:700;color:var(--text-primary);min-width:28px;text-align:right}
+.detail-record{display:flex;justify-content:center;gap:1.5rem;margin-top:1.25rem;padding-top:1rem;border-top:1px solid var(--border)}
+.detail-record-item{text-align:center}
+.detail-record-value{font-family:var(--font-display);font-size:1.5rem;font-weight:900;color:var(--gold)}
+.detail-record-label{font-size:.7rem;color:var(--text-dim);margin-top:.1rem}
+.detail-power{text-align:center;margin-top:1rem;padding:1rem;background:var(--bg-card);border-radius:var(--radius-md);border:1px solid var(--border)}
+.detail-power-value{font-family:var(--font-display);font-size:2rem;font-weight:900;color:var(--gold);text-shadow:0 0 20px rgba(212,168,67,.3)}
+.detail-power-label{font-size:.75rem;color:var(--text-dim);margin-top:.2rem}
+.arena-controls{display:flex;justify-content:center;gap:1rem;padding:0 1.5rem 2rem}
+.btn-primary{background:linear-gradient(135deg,var(--red),var(--crimson));color:white;border:none;padding:.75rem 1.8rem;font-family:var(--font-body);font-size:.95rem;font-weight:600;border-radius:50px;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:all .25s}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(196,30,58,.4)}.btn-glow{box-shadow:0 0 20px rgba(196,30,58,.2)}
+.btn-secondary{background:var(--bg-card);color:var(--text-secondary);border:1px solid var(--border);padding:.75rem 1.8rem;font-family:var(--font-body);font-size:.95rem;font-weight:500;border-radius:50px;cursor:pointer;display:flex;align-items:center;gap:.5rem;transition:all .25s}
+.btn-secondary:hover{border-color:var(--gold-dim);color:var(--text-primary)}.btn-icon{font-size:1rem}
+.pairings-container{max-width:800px;margin:0 auto;padding:0 1.5rem}
+.empty-state{text-align:center;padding:4rem 1rem;color:var(--text-dim)}.empty-icon{font-size:3rem;margin-bottom:1rem;opacity:.5}
+.empty-state h3{font-family:var(--font-display);font-size:1.2rem;color:var(--text-secondary);margin-bottom:.5rem}
+.pair-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem;margin-bottom:1rem;position:relative;overflow:hidden;animation:slideInPair .4s}
+.pair-card::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:60px;height:3px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.pair-card::after{content:'';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:100px;height:100px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Cpath d='M50 10L60 40H90L65 58L75 90L50 70L25 90L35 58L10 40H40Z' fill='none' stroke='%23c41e3a15' stroke-width='1'/%3E%3C/svg%3E") no-repeat center;background-size:100px;opacity:.3;pointer-events:none;animation:rotate-slow 20s linear infinite}
+.pair-fighters{display:flex;align-items:center;justify-content:center;gap:1.5rem;position:relative;z-index:1}
+.pair-fighter{display:flex;flex-direction:column;align-items:center;gap:.5rem;flex:1;max-width:200px}
+.pair-avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+.pair-avatar-placeholder{width:56px;height:56px;border-radius:50%;background:var(--bg-dark);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:1.3rem}
+.pair-name{font-weight:700;font-size:.95rem;text-align:center}.pair-power{font-size:.75rem;color:var(--text-dim)}
+.pair-vs{position:relative;flex-shrink:0;width:60px;height:60px;display:flex;align-items:center;justify-content:center}
+.pair-vs svg{position:absolute;inset:0}.pair-vs-text{font-family:var(--font-display);font-weight:900;font-size:1.1rem;color:var(--red);z-index:1;text-shadow:0 0 20px rgba(196,30,58,.3)}
+.pair-actions{display:flex;justify-content:center;gap:.75rem;margin-top:1.25rem;position:relative;z-index:1}
+.pair-btn{padding:.5rem 1.2rem;border-radius:50px;font-family:var(--font-body);font-size:.8rem;font-weight:600;cursor:pointer;transition:all .2s;border:none}
+.pair-btn-win{background:rgba(22,163,74,.15);color:#4ade80;border:1px solid rgba(22,163,74,.3)}.pair-btn-win:hover{background:rgba(22,163,74,.25)}
+.pair-btn-cancel{background:rgba(255,255,255,.05);color:var(--text-dim);border:1px solid var(--border)}.pair-btn-cancel:hover{border-color:var(--red);color:var(--red)}
+.match-history{display:flex;flex-direction:column;gap:.5rem}
+.history-item{display:flex;align-items:center;gap:1rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:.8rem 1.2rem;font-size:.85rem}
+.history-icon{font-size:1.2rem}.history-text{flex:1}.history-winner{color:var(--gold);font-weight:700}.history-date{font-size:.75rem;color:var(--text-dim)}
+.ranking-scroll{max-width:700px;margin:0 auto;padding:0 1.5rem 3rem}
+.scroll-ornament{text-align:center;padding:.75rem}.scroll-ornament svg{width:280px;height:auto;max-width:100%}
+.ranking-list{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;position:relative}
+.ranking-list::before{content:'';position:absolute;inset:8px;border:1px solid rgba(212,168,67,.08);border-radius:calc(var(--radius-lg) - 4px);pointer-events:none}
+.ranking-item{display:flex;align-items:center;gap:1rem;padding:1rem 1.25rem;border-bottom:1px solid var(--border);transition:background .2s;cursor:pointer;position:relative}
+.ranking-item:last-child{border-bottom:none}.ranking-item:hover{background:var(--bg-card-hover)}
+.ranking-item:first-child{background:linear-gradient(180deg,rgba(212,168,67,.05),transparent)}
+.ranking-position{font-family:var(--font-display);font-weight:900;font-size:1.2rem;min-width:2rem;text-align:center}
+.ranking-position.pos-1{color:var(--gold);font-size:1.4rem}.ranking-position.pos-2{color:#c0c0c0}.ranking-position.pos-3{color:#cd7f32}
+.ranking-avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--border)}
+.ranking-avatar-placeholder{width:40px;height:40px;border-radius:50%;background:var(--bg-dark);border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:.9rem}
+.ranking-info{flex:1;min-width:0}.ranking-name{font-weight:700;font-size:.95rem}.ranking-title{font-size:.75rem;color:var(--text-dim)}
+.ranking-stats{display:flex;gap:.75rem;align-items:center}.ranking-stat{text-align:center}
+.ranking-stat-value{font-family:var(--font-display);font-weight:700;font-size:.95rem;color:var(--gold)}.ranking-stat-label{font-size:.65rem;color:var(--text-dim)}
+
+/* ═══════ MODAL ═══════ */
+.modal-overlay{position:fixed;inset:0;z-index:2000;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all .3s;padding:1rem}
+.modal-overlay.open{opacity:1;visibility:visible}
+.modal{background:var(--bg-dark);border:1px solid var(--border);border-radius:var(--radius-lg);width:100%;max-width:520px;max-height:90vh;overflow-y:auto;transform:translateY(20px) scale(.95);transition:transform .3s}
+.modal-overlay.open .modal{transform:translateY(0) scale(1)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:1.25rem 1.5rem;border-bottom:1px solid var(--border)}
+.modal-header h2{font-family:var(--font-display);font-size:1.15rem;color:var(--gold)}
+.modal-close{width:32px;height:32px;border-radius:50%;border:none;background:rgba(255,255,255,.05);color:var(--text-dim);font-size:1.2rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.modal-close:hover{background:rgba(196,30,58,.2);color:var(--red)}
+#fighter-form{padding:1.5rem}
+.form-group{margin-bottom:1.25rem}.form-group label{display:block;font-size:.8rem;font-weight:600;color:var(--text-secondary);margin-bottom:.4rem}
+.form-group input[type="text"],.form-group input[type="url"],.form-group input[type="password"]{width:100%;padding:.65rem .9rem;background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-sm);color:var(--text-primary);font-family:var(--font-body);font-size:.9rem;transition:border-color .2s}
+.form-group input:focus{outline:none;border-color:var(--gold-dim)}
+.form-group input[type="range"]{width:100%;-webkit-appearance:none;appearance:none;height:4px;background:var(--bg-card);border-radius:2px;outline:none}
+.form-group input[type="range"]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;background:var(--gold);border-radius:50%;cursor:pointer;border:2px solid var(--bg-dark)}
+.range-value{font-size:.8rem;font-weight:700;color:var(--gold);margin-left:.5rem}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.form-actions{display:flex;justify-content:flex-end;gap:.75rem;margin-top:.5rem}
+
+/* Play Style Selector */
+.style-selector{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem}
+.style-option{background:var(--bg-card);border:2px solid var(--border);border-radius:var(--radius-md);padding:.75rem .5rem;cursor:pointer;transition:all .2s;text-align:center}
+.style-option:hover{border-color:var(--gold-dim);background:var(--bg-card-hover)}
+.style-option.selected{border-color:var(--gold);background:rgba(212,168,67,.1)}
+.style-option .style-icon{font-size:1.5rem;margin-bottom:.3rem}
+.style-option .style-name{font-size:.75rem;font-weight:700;color:var(--text-primary)}
+.style-option .style-desc{font-size:.6rem;color:var(--text-dim);margin-top:.15rem}
+
+/* Stat Preview */
+.stat-preview{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-bottom:1rem}
+.stat-preview-title{font-size:.75rem;font-weight:600;color:var(--text-secondary);margin-bottom:.6rem}
+.stat-preview-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.35rem}
+.stat-preview-label{font-size:.65rem;color:var(--text-dim);min-width:42px}
+.stat-preview-bar{flex:1;height:4px;background:var(--bg-dark);border-radius:2px;overflow:hidden}
+.stat-preview-fill{height:100%;border-radius:2px;transition:width .4s}
+.stat-preview-val{font-size:.65rem;font-weight:700;color:var(--text-secondary);min-width:20px;text-align:right}
+
+/* Admin Badge */
+.admin-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.65rem;color:var(--gold);background:rgba(212,168,67,.1);border:1px solid rgba(212,168,67,.2);padding:.2rem .6rem;border-radius:50px;margin-left:.5rem}
+.admin-indicator{position:fixed;bottom:1.5rem;left:1.5rem;z-index:999;font-size:.7rem;color:var(--gold);background:var(--bg-card);border:1px solid var(--border);padding:.4rem .8rem;border-radius:var(--radius-sm);display:flex;align-items:center;gap:.4rem}
+.admin-dot{width:6px;height:6px;border-radius:50%;background:#4ade80}
+
+/* Toast */
+#toast-container{position:fixed;bottom:1.5rem;right:1.5rem;z-index:3000;display:flex;flex-direction:column;gap:.5rem}
+.toast{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-md);padding:.75rem 1.2rem;font-size:.85rem;color:var(--text-primary);display:flex;align-items:center;gap:.5rem;animation:toastIn .3s;box-shadow:0 4px 20px rgba(0,0,0,.4);max-width:350px}
+.toast.success{border-color:rgba(22,163,74,.4)}.toast.error{border-color:rgba(196,30,58,.4)}.toast.info{border-color:rgba(59,130,246,.4)}
+.toast.removing{animation:toastOut .3s forwards}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg-deep)}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}::-webkit-scrollbar-thumb:hover{background:var(--gold-dim)}
+@media(max-width:768px){.nav-links{display:flex;position:fixed;bottom:0;left:0;right:0;background:rgba(13,10,10,.95);backdrop-filter:blur(20px);border-top:1px solid var(--border);padding:.5rem 0;justify-content:space-around;z-index:1000}.nav-btn{flex-direction:column;font-size:.7rem;padding:.4rem .6rem;gap:.2rem}.nav-icon{font-size:1.1rem}.nav-add-btn{position:fixed;bottom:4.5rem;right:1rem;z-index:1001;width:48px;height:48px;font-size:1.5rem;box-shadow:0 4px 20px rgba(0,0,0,.4)}.hero{min-height:75vh}.hero-stats{gap:1rem}.hero-stat-value{font-size:1.6rem}.hero-emblem img{max-width:180px}.fighters-grid{grid-template-columns:1fr}.form-row{grid-template-columns:1fr}.pair-fighters{gap:1rem}.page{padding-bottom:5rem}.ranking-stats{display:none}.style-selector{grid-template-columns:repeat(2,1fr)}.hero-mountains svg{height:120px}}
+    </style>
+</head>
+<body>
+<!-- ═══════ SVG DEFS ═══════ -->
+<svg style="position:absolute;width:0;height:0;overflow:hidden" aria-hidden="true"><defs>
+<symbol id="icon-dragon" viewBox="0 0 120 120"><circle cx="60" cy="60" r="56" fill="none" stroke="url(#gold-grad)" stroke-width="1.5" opacity=".6"/><circle cx="60" cy="60" r="48" fill="none" stroke="url(#gold-grad)" stroke-width=".5" opacity=".3"/><path d="M60 20 C45 25 35 40 38 55 C40 65 35 70 30 72 C35 78 42 82 50 80 C52 85 55 88 60 90 C65 88 68 85 70 80 C78 82 85 78 90 72 C85 70 80 65 82 55 C85 40 75 25 60 20Z" fill="none" stroke="url(#gold-grad)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><circle cx="52" cy="45" r="2.5" fill="#d4a843"/><circle cx="68" cy="45" r="2.5" fill="#d4a843"/><path d="M40 52 C32 48 28 42 25 38" fill="none" stroke="#d4a843" stroke-width=".8" opacity=".6"/><path d="M80 52 C88 48 92 42 95 38" fill="none" stroke="#d4a843" stroke-width=".8" opacity=".6"/><path d="M52 30 L55 22 L60 28 L65 22 L68 30" fill="none" stroke="#d4a843" stroke-width="1" opacity=".7"/></symbol>
+<symbol id="svg-cloud" viewBox="0 0 200 80"><path d="M10 60 C10 40 30 25 50 30 C55 15 75 10 90 20 C100 8 125 8 135 20 C150 12 175 18 180 35 C195 35 200 50 190 60 Z" fill="currentColor" opacity=".08"/></symbol>
+<symbol id="svg-mountain" viewBox="0 0 1200 200"><path d="M0 200 L0 140 L80 90 L150 130 L250 50 L350 110 L450 30 L550 100 L650 20 L750 90 L850 40 L950 100 L1050 60 L1150 120 L1200 80 L1200 200 Z" fill="url(#mountain-grad)" opacity=".15"/><path d="M0 200 L0 160 L100 120 L200 150 L350 80 L500 130 L650 60 L800 120 L950 70 L1100 130 L1200 100 L1200 200 Z" fill="url(#mountain-grad)" opacity=".08"/></symbol>
+<symbol id="svg-ink" viewBox="0 0 200 200"><circle cx="100" cy="100" r="60" fill="currentColor" opacity=".1"/><circle cx="80" cy="80" r="30" fill="currentColor" opacity=".08"/><circle cx="130" cy="90" r="25" fill="currentColor" opacity=".06"/><circle cx="90" cy="130" r="20" fill="currentColor" opacity=".05"/></symbol>
+<symbol id="svg-scroll-top" viewBox="0 0 300 40"><path d="M20 35 C60 35 80 10 150 10 C220 10 240 35 280 35" fill="none" stroke="#8b7530" stroke-width="1.5" opacity=".6"/><circle cx="150" cy="10" r="3" fill="#d4a843" opacity=".8"/><circle cx="120" cy="18" r="1.5" fill="#d4a843" opacity=".4"/><circle cx="180" cy="18" r="1.5" fill="#d4a843" opacity=".4"/></symbol>
+<symbol id="svg-scroll-bottom" viewBox="0 0 300 40"><path d="M20 5 C60 5 80 30 150 30 C220 30 240 5 280 5" fill="none" stroke="#8b7530" stroke-width="1.5" opacity=".6"/><circle cx="150" cy="30" r="3" fill="#d4a843" opacity=".8"/></symbol>
+<linearGradient id="gold-grad" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" stop-color="#8b7530"/><stop offset="50%" stop-color="#d4a843"/><stop offset="100%" stop-color="#8b7530"/></linearGradient>
+<linearGradient id="mountain-grad" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#d4a843"/><stop offset="100%" stop-color="#1a1210"/></linearGradient>
+</defs></svg>
+
+<!-- ═══════ LOADING ═══════ -->
+<div id="loading-screen"><div class="loading-inner"><div class="loading-emblem"><img src="jomyutbadminton.png" alt="Logo" style="width:120px;height:auto;animation:pulse-glow 2s ease-in-out infinite"></div><div class="loading-text">กำลัง召集จอมยุทธ…</div><div class="loading-bar"><div class="loading-bar-fill"></div></div></div></div>
+
+<!-- ═══════ NAV ═══════ -->
+<nav id="main-nav"><div class="nav-inner">
+    <div class="nav-brand"><span class="brand-icon"><img src="jomyutbadminton.png" alt="Logo" style="height:36px;width:auto;border-radius:4px"></span><span class="brand-text">จอมยุทธแบด</span></div>
+    <div class="nav-links">
+        <button class="nav-btn active" data-page="home"><span class="nav-icon">🏠</span> หน้าหลัก</button>
+        <button class="nav-btn" data-page="fighters"><span class="nav-icon">⚔</span> จอมยุทธ</button>
+        <button class="nav-btn" data-page="arena"><span class="nav-icon">🏯</span> สังเวียน</button>
+        <button class="nav-btn" data-page="ranking"><span class="nav-icon">🏆</span> ลำดับขั้น</button>
+    </div>
+    <button class="nav-add-btn" id="addFighterBtn" title="เพิ่มจอมยุทธใหม่"><span>+</span></button>
+</div></nav>
+
+<!-- ═══════ HOME ═══════ -->
+<section id="page-home" class="page active">
+    <div class="hero"><div class="hero-bg"></div><canvas id="qi-particles" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1"></canvas>
+        <div class="hero-clouds"><svg class="hero-cloud-layer" style="animation:cloud-drift 25s linear infinite;position:absolute;top:10%;opacity:.5"><use href="#svg-cloud" x="0" y="0" width="200" height="80" style="color:#d4a843"/></svg><svg class="hero-cloud-layer" style="animation:cloud-drift 35s linear infinite reverse;animation-delay:-12s;position:absolute;top:40%;opacity:.4"><use href="#svg-cloud" x="0" y="0" width="250" height="80" style="color:#d4a843"/></svg><svg class="hero-cloud-layer" style="animation:cloud-drift 30s linear infinite;animation-delay:-6s;position:absolute;top:70%;opacity:.3"><use href="#svg-cloud" x="0" y="0" width="180" height="80" style="color:#d4a843"/></svg></div>
+        <div class="hero-ink"><svg viewBox="0 0 200 200" style="color:#d4a843"><use href="#svg-ink"/></svg></div>
+        <div class="hero-ink-2"><svg viewBox="0 0 200 200" style="color:#c41e3a"><use href="#svg-ink"/></svg></div>
+        <div class="hero-mountains"><svg viewBox="0 0 1200 200" preserveAspectRatio="none" style="height:180px"><use href="#svg-mountain"/></svg></div>
+        <div class="hero-content">
+            <div class="hero-emblem"><img src="jomyutbadminton.png" alt="จอมยุทธแบดมินตัน" style="width:220px;height:auto;filter:drop-shadow(0 0 40px rgba(212,168,67,.4))"></div>
+            <div class="hero-badge">武道大会</div>
+            <h1 class="hero-title"><span class="title-line-1">ศึกจอมยุทธ</span><span class="title-line-2">แบดมินตัน</span></h1>
+            <p class="hero-subtitle">ที่นี่คือสังเวียนแห่งศักดิ์ศรี — ผู้ใดมีฝีมือ ผู้นั้นครองจ้าว</p>
+            <div class="section-divider-gold" style="margin-bottom:2rem"><svg viewBox="0 0 200 12"><path d="M0 6 C30 2 50 10 80 6 C100 3 110 8 130 6 C160 3 180 10 200 6" fill="none" stroke="url(#gold-grad)" stroke-width="1" opacity=".5"/><circle cx="100" cy="6" r="2" fill="#d4a843" opacity=".6"/></svg></div>
+            <div class="hero-stats">
+                <div class="hero-stat"><div class="hero-stat-value" id="stat-fighters">0</div><div class="hero-stat-label">จอมยุทธ</div></div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat"><div class="hero-stat-value" id="stat-matches">0</div><div class="hero-stat-label">ศึกที่สู้แล้ว</div></div>
+                <div class="hero-stat-divider"></div>
+                <div class="hero-stat"><div class="hero-stat-value" id="stat-battles">0</div><div class="hero-stat-label">รอบที่เล่น</div></div>
+            </div>
+            <button class="hero-cta" onclick="navigateTo('arena')"><span>เข้าสู่สังเวียน</span> <span>→</span></button>
+        </div>
+    </div>
+    <div class="section"><div class="section-header"><div class="section-icon">⚔</div><h2 class="section-title">ศึกล่าสุด</h2><div class="section-line"></div></div><div class="recent-matches" id="recent-matches"></div></div>
+    <div class="section"><div class="section-header"><div class="section-icon">👑</div><h2 class="section-title">จอมยุทธแถวหน้า</h2><div class="section-line"></div></div><div class="top-fighters" id="top-fighters"></div></div>
+</section>
+
+<!-- ═══════ FIGHTERS ═══════ -->
+<section id="page-fighters" class="page">
+    <div class="page-header"><h1 class="page-title">รายชื่อจอมยุทธ</h1><p class="page-desc">เหล่าผู้กล้าที่เข้าร่วมศึกแบดมินตัน</p>
+    <div class="section-divider-gold" style="margin-top:1.5rem"><svg viewBox="0 0 200 12"><path d="M0 6 C30 2 50 10 80 6 C100 3 110 8 130 6 C160 3 180 10 200 6" fill="none" stroke="url(#gold-grad)" stroke-width="1" opacity=".5"/><circle cx="100" cy="6" r="2" fill="#d4a843" opacity=".6"/></svg></div></div>
+    <div class="fighters-grid" id="fighters-grid"></div>
+</section>
+
+<!-- ═══════ ARENA ═══════ -->
+<section id="page-arena" class="page">
+    <div class="page-header"><h1 class="page-title">สังเวียนประลอง</h1><p class="page-desc">จับคู่ประลองฝีมือ — ผู้ใดจะเป็นผู้ชนะ?</p>
+    <div class="section-divider-gold" style="margin-top:1.5rem"><svg viewBox="0 0 200 12"><path d="M0 6 C30 2 50 10 80 6 C100 3 110 8 130 6 C160 3 180 10 200 6" fill="none" stroke="url(#gold-grad)" stroke-width="1" opacity=".5"/><circle cx="100" cy="6" r="2" fill="#d4a843" opacity=".6"/></svg></div></div>
+    <div class="arena-controls"><button class="btn-primary btn-glow" id="randomPairBtn"><span class="btn-icon">🎲</span> สุ่มจับคู่</button><button class="btn-secondary" id="manualPairBtn"><span class="btn-icon">✍</span> กำหนดคู่เอง</button></div>
+    <div class="pairings-container" id="pairings-container"><div class="empty-state"><div class="empty-icon">🏯</div><h3>ยังไม่มีคู่ประลอง</h3><p>กดปุ่ม "สุ่มจับคู่" เพื่อเริ่มศึก</p></div></div>
+    <div class="section" style="margin-top:3rem"><div class="section-header"><div class="section-icon">📜</div><h2 class="section-title">บันทึกศึก</h2><div class="section-line"></div></div><div class="match-history" id="match-history"></div></div>
+</section>
+
+<!-- ═══════ RANKING ═══════ -->
+<section id="page-ranking" class="page">
+    <div class="page-header"><h1 class="page-title">ลำดับขั้นจอมยุทธ</h1><p class="page-desc">อันดับขึ้นอยู่กับชัยชนะและฝีมือ</p></div>
+    <div class="ranking-scroll"><div class="scroll-ornament"><svg viewBox="0 0 300 40"><use href="#svg-scroll-top"/></svg></div><div class="ranking-list" id="ranking-list"></div><div class="scroll-ornament"><svg viewBox="0 0 300 40"><use href="#svg-scroll-bottom"/></svg></div></div>
+</section>
+
+<!-- ═══════ ADMIN PASSWORD MODAL ═══════ -->
+<div class="modal-overlay" id="admin-modal">
+    <div class="modal" style="max-width:380px">
+        <div class="modal-header"><h2>🔒 Admin Access</h2><button class="modal-close" id="admin-modal-close">&times;</button></div>
+        <div style="padding:1.5rem">
+            <div class="form-group"><label>รหัสผ่าน Admin</label><input type="password" id="admin-password" placeholder="กรอกรหัสผ่าน..." autofocus></div>
+            <div id="admin-error" style="color:var(--red);font-size:.8rem;margin-bottom:1rem;display:none">รหัสผ่านไม่ถูกต้อง!</div>
+            <div class="form-actions"><button type="button" class="btn-secondary" id="admin-cancel">ยกเลิก</button><button type="button" class="btn-primary" id="admin-submit">เข้าสู่ระบบ</button></div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════ DETAIL MODAL ═══════ -->
+<div id="detail-overlay" class="detail-overlay" onclick="if(event.target===this)closeDetail()">
+    <div class="detail-modal">
+        <div class="detail-modal-header" id="detail-header"></div>
+        <button class="detail-modal-close" onclick="closeDetail()">✕</button>
+        <div class="detail-modal-body" id="detail-body"></div>
+    </div>
+</div>
+
+<!-- ═══════ FIGHTER MODAL ═══════ -->
+<div class="modal-overlay" id="fighter-modal">
+    <div class="modal">
+        <div class="modal-header"><h2 id="modal-title">เพิ่มจอมยุทธใหม่</h2><button class="modal-close" id="modal-close">&times;</button></div>
+        <form id="fighter-form">
+            <input type="hidden" id="fighter-id">
+            <div class="form-group"><label>ชื่อจอมยุทธ *</label><input type="text" id="fighter-name" placeholder="เช่น เซียวหลง" required></div>
+            <div class="form-group"><label>ฉายา</label><input type="text" id="fighter-nickname" placeholder="เช่น นักรบสายฟ้า"></div>
+            <div class="form-group"><label>รูปโปรไฟล์ (URL)</label><input type="url" id="fighter-avatar" placeholder="https://..."></div>
+            <div class="form-group">
+                <label>สายการเล่น *</label>
+                <div class="style-selector" id="style-selector"></div>
+            </div>
+            <div class="stat-preview" id="stat-preview" style="display:none">
+                <div class="stat-preview-title">ค่าพลังเริ่มต้นตามสาย</div>
+                <div id="stat-preview-content"></div>
+            </div>
+            <div class="form-group"><label>ตั้งค่าพลังด้วยตนเอง (ลากเพื่อปรับ)</label></div>
+            <div class="form-row">
+                <div class="form-group"><label>⚔ โจมตี</label><input type="range" id="fighter-atk" min="1" max="100" value="50"><span class="range-value" id="atk-value">50</span></div>
+                <div class="form-group"><label>🛡 ป้องกัน</label><input type="range" id="fighter-def" min="1" max="100" value="50"><span class="range-value" id="def-value">50</span></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>💨 ความเร็ว</label><input type="range" id="fighter-spd" min="1" max="100" value="50"><span class="range-value" id="spd-value">50</span></div>
+                <div class="form-group"><label>🎯 เทคนิค</label><input type="range" id="fighter-tec" min="1" max="100" value="50"><span class="range-value" id="tec-value">50</span></div>
+            </div>
+            <div class="form-row">
+                <div class="form-group"><label>❤ อึด</label><input type="range" id="fighter-sta" min="1" max="100" value="50"><span class="range-value" id="sta-value">50</span></div>
+                <div class="form-group"><label>🧠 จิตใจ</label><input type="range" id="fighter-mnt" min="1" max="100" value="50"><span class="range-value" id="mnt-value">50</span></div>
+            </div>
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" id="modal-cancel">ยกเลิก</button>
+                <button type="submit" class="btn-primary">บันทึก</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="admin-indicator" class="admin-indicator" style="display:none"><div class="admin-dot"></div> Admin Mode</div>
+<div id="toast-container"></div>
+
+<script>
+/* ═══════ PLAY STYLES ═══════ */
+var PLAY_STYLES={
+    smash:{name:'สายตบ',nameEn:'Smash',desc:'โจมตีรุนแรง เน้นลูกตบทำคะแนน',icon:'💥',color:'#c41e3a',atk:80,def:45,spd:65,tec:50,sta:55,mnt:50,
+        growth:{atk:3,def:1,spd:2,tec:1,sta:1,mnt:1}},
+    drop:{name:'สายหยอด',nameEn:'Drop',desc:'ลูกหยอดเนียน หลอกคู่ต่อสู้',icon:'🎯',color:'#9333ea',atk:40,def:55,spd:55,tec:85,sta:60,mnt:70,
+        growth:{atk:1,def:1,spd:1,tec:3,sta:2,mnt:2}},
+    defense:{name:'สายรับ',nameEn:'Defense',desc:'เกมรับเหนียวแน่น รอจังหวะโต้กลับ',icon:'🛡',color:'#2563eb',atk:45,def:85,spd:50,tec:55,sta:80,mnt:60,
+        growth:{atk:1,def:3,spd:1,tec:1,sta:2,mnt:2}},
+    control:{name:'สายคอนโทรล',nameEn:'Control',desc:'คุมจังหวะเกม วางลูกแม่นยำ',icon:'🧠',color:'#0891b2',atk:55,def:60,spd:60,tec:75,sta:65,mnt:75,
+        growth:{atk:1,def:2,spd:1,tec:2,sta:1,mnt:3}},
+    speed:{name:'สายสปีด',nameEn:'Speed',desc:'เคลื่อนไหวเร็ว รุกเร็ว-ถอยเร็ว',icon:'⚡',color:'#16a34a',atk:60,def:45,spd:85,tec:55,sta:70,mnt:50,
+        growth:{atk:2,def:1,spd:3,tec:1,sta:2,mnt:1}},
+    allround:{name:'สายครบเครื่อง',nameEn:'All-round',desc:'สมดุลทุกด้าน ไม่มีจุดอ่อน',icon:'⚖',color:'#d97706',atk:60,def:60,spd:60,tec:60,sta:60,mnt:60,
+        growth:{atk:2,def:2,spd:2,tec:2,sta:2,mnt:2}}
+};
+var STAT_LABELS={atk:'⚔ โจมตี',def:'🛡 ป้องกัน',spd:'💨 ความเร็ว',tec:'🎯 เทคนิค',sta:'❤ อึด',mnt:'🧠 จิตใจ'};
+var STAT_COLORS={atk:'atk',def:'def',spd:'spd',tec:'tec',sta:'sta',mnt:'mnt'};
+var RANKS=[
+    {minWins:0,title:'เด็กฝึกหัด',emoji:'🌱',color:'#786858'},
+    {minWins:2,title:'ศิษย์ฝึกหัด',emoji:'🥊',color:'#a09080'},
+    {minWins:5,title:'จอมยุทธ์',emoji:'⚔',color:'#60a5fa'},
+    {minWins:8,title:'ดาบพิทักษ์',emoji:'🗡',color:'#4ade80'},
+    {minWins:12,title:'นักรบสงคราม',emoji:'🛡',color:'#c084fc'},
+    {minWins:18,title:'ขุนพล',emoji:'🐉',color:'#f59e0b'},
+    {minWins:25,title:'ทัพหลวง',emoji:'👑',color:'#d4a843'},
+    {minWins:35,title:'จักรพรรดิ์',emoji:'🏛',color:'#ef4444'}
+];
+var CHARACTERS='龙虎豹鹰鹤蛇熊狼凤麒麟';
+function getRank(w){var r=RANKS[0];for(var i=0;i<RANKS.length;i++){if(w>=RANKS[i].minWins)r=RANKS[i]}return r}
+function getCharForName(n){var h=0;for(var i=0;i<n.length;i++){h=((h<<5)-h)+n.charCodeAt(i);h|=0}return CHARACTERS[Math.abs(h)%CHARACTERS.length]}
+function powerOf(f){return Math.round((f.atk+f.def+f.spd+f.tec+f.sta+f.mnt)/6)}
+function cornerOrnaments(){return '<svg style="position:absolute;top:0;left:0;width:40px;height:40px;pointer-events:none" viewBox="0 0 40 40"><path d="M2 38 C2 18 12 6 38 2" fill="none" stroke="#d4a843" stroke-width=".7" opacity=".25"/></svg><svg style="position:absolute;top:0;right:0;width:40px;height:40px;pointer-events:none" viewBox="0 0 40 40"><path d="M38 38 C38 18 28 6 2 2" fill="none" stroke="#d4a843" stroke-width=".7" opacity=".25"/></svg>'}
+function vsSVG(){return '<svg viewBox="0 0 60 60" width="60" height="60" style="position:absolute;inset:0"><circle cx="30" cy="30" r="28" fill="none" stroke="#c41e3a" stroke-width="1.5" opacity=".25"/><circle cx="30" cy="30" r="22" fill="none" stroke="#c41e3a" stroke-width=".5" opacity=".15"/><path d="M15 30 L30 15 L45 30 L30 45Z" fill="none" stroke="#c41e3a" stroke-width="1" opacity=".2"/></svg>'}
+
+/* ═══════ ADMIN AUTH ═══════ */
+var ADMIN_PASSWORD='bmt1150';
+var isAdmin=false;
+var pendingAction=null;
+function requireAdmin(callback){
+    if(isAdmin){callback();return}
+    pendingAction=callback;
+    document.getElementById('admin-modal').classList.add('open');
+    document.getElementById('admin-password').value='';
+    document.getElementById('admin-error').style.display='none';
+    setTimeout(function(){document.getElementById('admin-password').focus()},100);
+}
+function verifyAdmin(){
+    var pw=document.getElementById('admin-password').value;
+    if(pw===ADMIN_PASSWORD){
+        isAdmin=true;
+        document.getElementById('admin-modal').classList.remove('open');
+        document.getElementById('admin-indicator').style.display='flex';
+        showToast('✓ Admin Mode เปิดใช้งานแล้ว','success');
+        if(pendingAction){pendingAction();pendingAction=null}
+    }else{
+        document.getElementById('admin-error').style.display='block';
+        document.getElementById('admin-password').value='';
+        document.getElementById('admin-password').focus();
+    }
+}
+
+/* ═══════ DATA ═══════ */
+var STORAGE_KEY='badminton_tournament';
+function loadData(){try{var r=localStorage.getItem(STORAGE_KEY);if(r)return JSON.parse(r)}catch(e){}return{fighters:[],matches:[],pairings:[]}}
+function saveData(d){localStorage.setItem(STORAGE_KEY,JSON.stringify(d))}
+var appData=loadData();
+
+/* ═══════ DATA MIGRATION: reset old format ═══════ */
+function migrateData(){
+    if(appData.fighters.length>0){
+        var first=appData.fighters[0];
+        if(!first.style || first.hasOwnProperty('hp')){
+            appData={fighters:[],matches:[],pairings:[]};
+            saveData(appData);
+        }
+    }
+    if(appData.fighters.length>0){
+        var avatars={1:'img/art_char.png',2:'img/ice_char.png',3:'img/ong_char.png',4:'img/oat_char.png',5:'img/dum_char.png',6:'img/pro_char.png'};
+        var changed=false;
+        appData.fighters.forEach(function(f){if(!f.avatar && avatars[f.id]){f.avatar=avatars[f.id];changed=true}});
+        if(changed)saveData(appData);
+    }
+}
+
+function initMockData(){
+    if(appData.fighters.length>0)return;
+    appData.fighters=[
+        {id:1,name:'อาร์ต',nickname:'พายุmscorlib',avatar:'img/art_char.png',style:'allround',atk:62,def:62,spd:62,tec:62,sta:62,mnt:62,wins:0,losses:0,matchesPlayed:0},
+        {id:2,name:'ไอซ์',nickname:'โล่แห่งเทือกเขา',avatar:'img/ice_char.png',style:'defense',atk:48,def:85,spd:50,tec:55,sta:80,mnt:60,wins:0,losses:0,matchesPlayed:0},
+        {id:3,name:'อ๋อง',nickname:'นักปราชญ์แห่ง shuttle',avatar:'img/ong_char.png',style:'drop',atk:42,def:55,spd:55,tec:85,sta:60,mnt:72,wins:0,losses:0,matchesPlayed:0},
+        {id:4,name:'โอ็ต',nickname:'ค้อนสายฟ้า',avatar:'img/oat_char.png',style:'smash',atk:88,def:45,spd:65,tec:50,sta:55,mnt:50,wins:0,losses:0,matchesPlayed:0},
+        {id:5,name:'ดำ',nickname:'อสูรยามราตรี',avatar:'img/dum_char.png',style:'smash',atk:85,def:48,spd:68,tec:52,sta:55,mnt:50,wins:0,losses:0,matchesPlayed:0},
+        {id:6,name:'ปอ',nickname:'หินผาไม่มีวันแตก',avatar:'img/pro_char.png',style:'defense',atk:45,def:82,spd:52,tec:55,sta:78,mnt:62,wins:0,losses:0,matchesPlayed:0},
+        {id:7,name:'พี่ตัง',nickname:'ดาบผ่าฟ้า',avatar:'',style:'smash',atk:90,def:45,spd:62,tec:48,sta:52,mnt:48,wins:0,losses:0,matchesPlayed:0},
+        {id:8,name:'พี่โอ็ต',nickname:'จอมกลยุทธ์',avatar:'',style:'drop',atk:40,def:55,spd:55,tec:82,sta:62,mnt:70,wins:0,losses:0,matchesPlayed:0}
+    ];
+    appData.matches=[];
+    appData.pairings=[];appData.nextId=9;appData.nextMatchId=6;saveData(appData);
+}
+
+/* ═══════ NAV ═══════ */
+function navigateTo(page){
+    document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active')});
+    document.querySelectorAll('.nav-btn').forEach(function(b){b.classList.remove('active')});
+    document.getElementById('page-'+page).classList.add('active');
+    document.querySelector('.nav-btn[data-page="'+page+'"]').classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+    if(page==='home')renderHome();if(page==='fighters')renderFighters();
+    if(page==='arena')renderArena();if(page==='ranking')renderRanking();
+}
+function showToast(msg,type){
+    type=type||'success';var c=document.getElementById('toast-container');
+    var t=document.createElement('div');t.className='toast '+type;
+    t.innerHTML='<span>'+(type==='success'?'✓':type==='error'?'✕':'ℹ')+'</span> '+msg;
+    c.appendChild(t);setTimeout(function(){t.classList.add('removing');setTimeout(function(){t.remove()},300)},3000);
+}
+function fmtDate(s){if(!s)return'';var d=new Date(s);return d.toLocaleDateString('th-TH',{day:'numeric',month:'short'})}
+function renderStyleBadge(f){
+    var s=PLAY_STYLES[f.style];if(!s)return'';
+    return '<div class="fighter-style-badge" style="color:'+s.color+';border-color:'+s.color+'30;background:'+s.color+'15">'+s.icon+' '+s.name+'</div>';
+}
+
+/* ═══════ RENDER HOME ═══════ */
+function renderHome(){
+    document.getElementById('stat-fighters').textContent=appData.fighters.length;
+    document.getElementById('stat-matches').textContent=appData.matches.length;
+    document.getElementById('stat-battles').textContent=appData.fighters.reduce(function(s,f){return s+f.matchesPlayed},0);
+    var rc=document.getElementById('recent-matches');
+    var rm=appData.matches.slice().reverse().slice(0,5);
+    if(!rm.length){rc.innerHTML='<div class="empty-state"><div class="empty-icon">📜</div><h3>ยังไม่มีศึกที่สู้แล้ว</h3></div>';return}
+    rc.innerHTML=rm.map(function(m){
+        var w=appData.fighters.find(function(f){return f.id===m.winnerId});var l=appData.fighters.find(function(f){return f.id===m.loserId});
+        if(!w||!l)return'';
+        return '<div class="match-card-mini"><div class="match-mini-fighters"><div class="match-mini-fighter">'+(w.avatar?'<img class="mini-avatar" src="'+w.avatar+'">':'<div class="mini-avatar-placeholder">'+getCharForName(w.name)+'</div>')+'<span class="mini-name match-mini-winner">'+w.name+'</span></div><span class="match-mini-vs">VS</span><div class="match-mini-fighter">'+(l.avatar?'<img class="mini-avatar" src="'+l.avatar+'">':'<div class="mini-avatar-placeholder">'+getCharForName(l.name)+'</div>')+'<span class="mini-name">'+l.name+'</span></div></div><div class="match-mini-result">'+(m.score||'')+'</div></div>';
+    }).join('');
+    var tc=document.getElementById('top-fighters');
+    var ts=appData.fighters.slice().sort(function(a,b){return b.wins-a.wins}).slice(0,4);
+    tc.innerHTML=ts.map(function(f,i){return '<div class="top-fighter-card" onclick="navigateTo(\'fighters\')"><div class="top-rank rank-'+(i+1)+'">'+(i+1)+'</div><div class="top-info"><div class="top-name">'+f.name+'</div><div class="top-title">'+getRank(f.wins).emoji+' '+getRank(f.wins).title+'</div></div><div class="top-wins">'+f.wins+' ชนะ</div></div>'}).join('');
+}
+
+/* ═══════ RENDER FIGHTERS ═══════ */
+function renderFighters(){
+    var g=document.getElementById('fighters-grid');
+    var s=appData.fighters.slice().sort(function(a,b){return b.wins-a.wins});
+    if(!s.length){g.innerHTML='<div class="empty-state" style="grid-column:1/-1"><div class="empty-icon">⚔</div><h3>ยังไม่มีจอมยุทธ</h3></div>';return}
+    g.innerHTML=s.map(function(f,i){
+        var r=getRank(f.wins);var p=powerOf(f);var st=PLAY_STYLES[f.style]||PLAY_STYLES.allround;
+        var rankClass=i<3?' rank-'+(i+1):'';
+        return '<div class="fighter-card" onclick="openDetail('+f.id+')">'+
+            '<div class="fighter-card-image">'+(f.avatar?'<img src="'+f.avatar+'" alt="'+f.name+'">':'<div class="fighter-card-image-placeholder">'+getCharForName(f.name)+'</div>')+
+            '<div class="fighter-card-rank'+rankClass+'">'+(i+1)+'</div>'+
+            '<div class="fighter-card-actions">'+
+            '<button class="fighter-action-btn" onclick="event.stopPropagation();editFighter('+f.id+')" title="แก้ไข">✎</button>'+
+            '<button class="fighter-action-btn delete" onclick="event.stopPropagation();deleteFighter('+f.id+')" title="ลบ">✕</button></div></div>'+
+            '<div class="fighter-card-info"><div class="fighter-card-name">'+f.name+'</div>'+(f.nickname?'<div class="fighter-card-nickname">'+f.nickname+'</div>':'')+
+            renderStyleBadge(f)+'</div>'+
+            '<div class="fighter-card-stats-mini">'+
+            ['atk','def','spd','tec','sta','mnt'].map(function(k){return '<div class="fighter-stat-mini"><span>'+STAT_LABELS[k].split(' ')[0]+'</span><span class="fighter-stat-mini-val">'+f[k]+'</span></div>'}).join('')+'</div>'+
+            '<div class="fighter-card-footer"><div class="fighter-record"><div class="record-item"><span class="record-value">'+f.wins+'</span><span class="record-label">ชนะ</span></div><div class="record-item"><span class="record-value" style="color:var(--red)">'+f.losses+'</span><span class="record-label">แพ้</span></div><div class="record-item"><span class="record-value">'+f.matchesPlayed+'</span><span class="record-label">รอบ</span></div></div>'+
+            '<div style="text-align:right"><div class="fighter-power">'+p+'</div><div class="fighter-power-label">พลังรวม</div></div></div></div>';
+    }).join('');
+}
+
+/* ═══════ RENDER ARENA ═══════ */
+function renderArena(){
+    var c=document.getElementById('pairings-container');var ps=appData.pairings;
+    if(!ps.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">🏯</div><h3>ยังไม่มีคู่ประลอง</h3><p>กดปุ่ม "สุ่มจับคู่" เพื่อเริ่มศึก</p></div>';return}
+    c.innerHTML=ps.map(function(p,idx){
+        var f1=appData.fighters.find(function(f){return f.id===p.fighter1Id});var f2=appData.fighters.find(function(f){return f.id===p.fighter2Id});
+        if(!f1||!f2)return'';
+        return '<div class="pair-card"><div class="pair-fighters"><div class="pair-fighter">'+(f1.avatar?'<img class="pair-avatar" src="'+f1.avatar+'">':'<div class="pair-avatar-placeholder">'+getCharForName(f1.name)+'</div>')+'<div class="pair-name">'+f1.name+'</div><div class="pair-power">พลัง '+powerOf(f1)+'</div></div><div class="pair-vs">'+vsSVG()+'<span class="pair-vs-text">⚔</span></div><div class="pair-fighter">'+(f2.avatar?'<img class="pair-avatar" src="'+f2.avatar+'">':'<div class="pair-avatar-placeholder">'+getCharForName(f2.name)+'</div>')+'<div class="pair-name">'+f2.name+'</div><div class="pair-power">พลัง '+powerOf(f2)+'</div></div></div><div class="pair-actions"><button class="pair-btn pair-btn-win" onclick="recordWin('+idx+','+f1.id+')">'+f1.name+' ชนะ</button><button class="pair-btn pair-btn-win" onclick="recordWin('+idx+','+f2.id+')">'+f2.name+' ชนะ</button><button class="pair-btn pair-btn-cancel" onclick="cancelPair('+idx+')">ยกเลิก</button></div></div>';
+    }).join('');
+    var hc=document.getElementById('match-history');var rc=appData.matches.slice().reverse().slice(0,10);
+    if(!rc.length){hc.innerHTML='<div class="empty-state"><div class="empty-icon">📜</div><h3>ยังไม่มีบันทึกศึก</h3></div>';return}
+    hc.innerHTML=rc.map(function(m){var w=appData.fighters.find(function(f){return f.id===m.winnerId});var l=appData.fighters.find(function(f){return f.id===m.loserId});if(!w||!l)return'';return '<div class="history-item"><span class="history-icon">⚔</span><div class="history-text"><span class="history-winner">'+w.name+'</span> ชนะ <span style="color:var(--text-secondary)">'+l.name+'</span>'+(m.score?'<span style="color:var(--text-dim);margin-left:.5rem">'+m.score+'</span>':'')+'</div><span class="history-date">'+fmtDate(m.date)+'</span></div>'}).join('');
+}
+
+/* ═══════ RENDER RANKING ═══════ */
+function renderRanking(){
+    var c=document.getElementById('ranking-list');
+    var s=appData.fighters.slice().sort(function(a,b){if(b.wins!==a.wins)return b.wins-a.wins;return powerOf(b)-powerOf(a)});
+    if(!s.length){c.innerHTML='<div class="empty-state"><div class="empty-icon">🏆</div><h3>ยังไม่มีจอมยุทธ</h3></div>';return}
+    c.innerHTML=s.map(function(f,i){var r=getRank(f.wins);var p=powerOf(f);
+        return '<div class="ranking-item"><div class="ranking-position pos-'+(i+1)+'">'+(i+1)+'</div>'+(f.avatar?'<img class="ranking-avatar" src="'+f.avatar+'">':'<div class="ranking-avatar-placeholder">'+getCharForName(f.name)+'</div>')+'<div class="ranking-info"><div class="ranking-name">'+f.name+'</div><div class="ranking-title">'+r.emoji+' '+r.title+'</div></div><div class="ranking-stats"><div class="ranking-stat"><div class="ranking-stat-value">'+f.wins+'</div><div class="ranking-stat-label">ชนะ</div></div><div class="ranking-stat"><div class="ranking-stat-value">'+f.losses+'</div><div class="ranking-stat-label">แพ้</div></div><div class="ranking-stat"><div class="ranking-stat-value">'+p+'</div><div class="ranking-stat-label">พลัง</div></div></div></div>'}).join('');
+}
+
+/* ═══════ DETAIL MODAL ═══════ */
+function openDetail(id){
+    var f=appData.fighters.find(function(x){return x.id===id});if(!f)return;
+    var r=getRank(f.wins);var p=powerOf(f);var st=PLAY_STYLES[f.style]||PLAY_STYLES.allround;
+    var hdr=document.getElementById('detail-header');
+    hdr.innerHTML=f.avatar?'<img src="'+f.avatar+'" alt="'+f.name+'">':'<div class="detail-modal-header-placeholder">'+getCharForName(f.name)+'</div>';
+    var bd=document.getElementById('detail-body');
+    var statsHtml=['atk','def','spd','tec','sta','mnt'].map(function(k){
+        var icons={atk:'⚔',def:'🛡',spd:'💨',tec:'🎯',sta:'❤',mnt:'🧠'};
+        return '<div class="detail-stat-row"><div class="detail-stat-icon '+k+'">'+icons[k]+'</div><span class="detail-stat-label">'+STAT_LABELS[k].split(' ')[1]+'</span><div class="detail-stat-bar"><div class="detail-stat-bar-fill stat-bar-fill '+STAT_COLORS[k]+'" style="width:'+f[k]+'%"></div></div><span class="detail-stat-val">'+f[k]+'</span></div>';
+    }).join('');
+    bd.innerHTML='<div class="detail-modal-name">'+f.name+'</div>'+(f.nickname?'<div class="detail-modal-nickname">'+f.nickname+'</div>':'')+
+        renderStyleBadge(f)+'<div class="detail-stats-full">'+statsHtml+'</div>'+
+        '<div class="detail-record"><div class="detail-record-item"><div class="detail-record-value">'+f.wins+'</div><div class="detail-record-label">ชนะ</div></div><div class="detail-record-item"><div class="detail-record-value" style="color:var(--red)">'+f.losses+'</div><div class="detail-record-label">แพ้</div></div><div class="detail-record-item"><div class="detail-record-value">'+f.matchesPlayed+'</div><div class="detail-record-label">รอบ</div></div></div>'+
+        '<div class="detail-power"><div class="detail-power-value">'+p+'</div><div class="detail-power-label">พลังรวม</div></div>';
+    document.getElementById('detail-overlay').classList.add('open');
+    document.body.style.overflow='hidden';
+}
+function closeDetail(){
+    document.getElementById('detail-overlay').classList.remove('open');
+    document.body.style.overflow='';
+}
+
+/* ═══════ STYLE SELECTOR ═══════ */
+var selectedStyle='allround';
+function renderStyleSelector(){
+    var el=document.getElementById('style-selector');
+    el.innerHTML=Object.keys(PLAY_STYLES).map(function(k){
+        var s=PLAY_STYLES[k];
+        return '<div class="style-option'+(selectedStyle===k?' selected':'')+'" data-style="'+k+'" onclick="selectStyle(\''+k+'\')"><div class="style-icon">'+s.icon+'</div><div class="style-name">'+s.name+'</div><div class="style-desc">'+s.desc+'</div></div>';
+    }).join('');
+}
+function selectStyle(k){
+    selectedStyle=k;renderStyleSelector();
+    var s=PLAY_STYLES[k];
+    document.getElementById('fighter-atk').value=s.atk;document.getElementById('atk-value').textContent=s.atk;
+    document.getElementById('fighter-def').value=s.def;document.getElementById('def-value').textContent=s.def;
+    document.getElementById('fighter-spd').value=s.spd;document.getElementById('spd-value').textContent=s.spd;
+    document.getElementById('fighter-tec').value=s.tec;document.getElementById('tec-value').textContent=s.tec;
+    document.getElementById('fighter-sta').value=s.sta;document.getElementById('sta-value').textContent=s.sta;
+    document.getElementById('fighter-mnt').value=s.mnt;document.getElementById('mnt-value').textContent=s.mnt;
+    showStatPreview(k);
+}
+function showStatPreview(k){
+    var s=PLAY_STYLES[k];var pv=document.getElementById('stat-preview');var pc=document.getElementById('stat-preview-content');
+    pv.style.display='block';
+    pc.innerHTML=['atk','def','spd','tec','sta','mnt'].map(function(st){
+        return '<div class="stat-preview-row"><span class="stat-preview-label">'+STAT_LABELS[st].split(' ')[1]+'</span><div class="stat-preview-bar"><div class="stat-preview-fill stat-bar-fill '+STAT_COLORS[st]+'" style="width:'+s[st]+'%"></div></div><span class="stat-preview-val">'+s[st]+'</span></div>';
+    }).join('');
+}
+
+/* ═══════ CRUD ═══════ */
+function addFighter(d){
+    var f={id:appData.nextId++||Date.now(),name:d.name,nickname:d.nickname||'',avatar:d.avatar||'',style:d.style||'allround',
+        atk:+d.atk,def:+d.def,spd:+d.spd,tec:+d.tec,sta:+d.sta,mnt:+d.mnt,wins:0,losses:0,matchesPlayed:0};
+    appData.fighters.push(f);saveData(appData);showToast('⚔ '+f.name+' เข้าร่วมศึกแล้ว!');
+}
+function updateFighter(id,d){
+    var f=appData.fighters.find(function(x){return x.id===id});if(!f)return;
+    f.name=d.name;f.nickname=d.nickname||'';f.avatar=d.avatar||'';f.style=d.style||f.style;
+    f.atk=+d.atk;f.def=+d.def;f.spd=+d.spd;f.tec=+d.tec;f.sta=+d.sta;f.mnt=+d.mnt;
+    saveData(appData);showToast('✎ แก้ไขข้อมูล '+f.name+' แล้ว');
+}
+function deleteFighter(id){
+    var f=appData.fighters.find(function(x){return x.id===id});if(!f)return;
+    appData.fighters=appData.fighters.filter(function(x){return x.id!==id});
+    appData.matches=appData.matches.filter(function(m){return m.winnerId!==id&&m.loserId!==id});
+    appData.pairings=appData.pairings.filter(function(p){return p.fighter1Id!==id&&p.fighter2Id!==id});
+    saveData(appData);showToast('✕ '+f.name+' ถูกลบออกแล้ว');renderAll();
+}
+function editFighter(id){var f=appData.fighters.find(function(x){return x.id===id});if(f)openModal(f)}
+function openModal(f){
+    var m=document.getElementById('fighter-modal'),t=document.getElementById('modal-title');
+    if(f){t.textContent='แก้ไขข้อมูลจอมยุทธ';document.getElementById('fighter-id').value=f.id;
+        document.getElementById('fighter-name').value=f.name;document.getElementById('fighter-nickname').value=f.nickname;
+        document.getElementById('fighter-avatar').value=f.avatar;selectedStyle=f.style||'allround';
+        document.getElementById('fighter-atk').value=f.atk;document.getElementById('fighter-def').value=f.def;
+        document.getElementById('fighter-spd').value=f.spd;document.getElementById('fighter-tec').value=f.tec;
+        document.getElementById('fighter-sta').value=f.sta;document.getElementById('fighter-mnt').value=f.mnt;
+    }else{t.textContent='เพิ่มจอมยุทธใหม่';document.getElementById('fighter-form').reset();document.getElementById('fighter-id').value='';selectedStyle='allround';selectStyle('allround')}
+    renderStyleSelector();updateRangeDisplays();m.classList.add('open');
+}
+function closeModal(){document.getElementById('fighter-modal').classList.remove('open')}
+function updateRangeDisplays(){
+    ['atk','def','spd','tec','sta','mnt'].forEach(function(k){
+        document.getElementById(k+'-value').textContent=document.getElementById('fighter-'+k).value;
+    });
+}
+
+/* ═══════ PAIRING + STAT GROWTH ═══════ */
+function randomPair(){
+    if(appData.fighters.length<2){showToast('ต้องมีจอมยุทธอย่างน้อย 2 คน','error');return}
+    var paired=new Set();appData.pairings.forEach(function(p){paired.add(p.fighter1Id);paired.add(p.fighter2Id)});
+    var np=appData.fighters.filter(function(f){return!paired.has(f.id)});
+    if(np.length<2){showToast('จอมยุทธทุกคนถูกจับคู่แล้ว','error');return}
+    for(var i=np.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=np[i];np[i]=np[j];np[j]=t}
+    for(var k=0;k<np.length-1;k+=2){appData.pairings.push({fighter1Id:np[k].id,fighter2Id:np[k+1].id})}
+    saveData(appData);showToast('🎲 จับคู่สำเร็จ '+Math.floor(np.length/2)+' คู่!');renderArena();
+}
+function cancelPair(i){appData.pairings.splice(i,1);saveData(appData);renderArena()}
+function recordWin(pi,wid){
+    var p=appData.pairings[pi];if(!p)return;
+    var lid=p.fighter1Id===wid?p.fighter2Id:p.fighter1Id;
+    var w=appData.fighters.find(function(f){return f.id===wid});var l=appData.fighters.find(function(f){return f.id===lid});
+    if(!w||!l)return;
+    w.wins++;w.matchesPlayed++;l.losses++;l.matchesPlayed++;
+    /* STAT GROWTH: winner gets stats increased based on play style */
+    var style=PLAY_STYLES[w.style]||PLAY_STYLES.allround;var growth=style.growth;var grew=[];
+    ['atk','def','spd','tec','sta','mnt'].forEach(function(k){
+        var gain=growth[k]||1;
+        if(w[k]<100){
+            var old=w[k];w[k]=Math.min(100,w[k]+gain);
+            if(w[k]>old)grew.push({stat:k,from:old,to:w[k],gain:w[k]-old});
+        }
+    });
+    appData.matches.push({id:appData.nextMatchId++||Date.now(),winnerId:wid,loserId:lid,date:new Date().toISOString().split('T')[0],score:''});
+    appData.pairings.splice(pi,1);saveData(appData);
+    var wr=getRank(w.wins);var growMsg=grew.length?' | เพิ่ม: '+grew.map(function(g){return STAT_LABELS[g.stat].split(' ')[1]+'+'+g.gain}).join(', '):'';
+    showToast('🏆 '+w.name+' ชนะ '+l.name+'! '+wr.emoji+' '+wr.title+growMsg,'success');
+    renderArena();
+}
+
+/* ═══════ ADMIN GATED ACTIONS ═══════ */
+function gatedAddFighter(){openModal(null)}
+function gatedEditFighter(id){editFighter(id)}
+function gatedDeleteFighter(id){
+    var f=appData.fighters.find(function(x){return x.id===id});if(!f)return;
+    if(!confirm('ต้องการลบ '+f.name+' ออกจากการแข่งขัน?'))return;
+    deleteFighter(id);
+}
+
+function renderAll(){renderHome();renderFighters();renderArena();renderRanking()}
+
+/* ═══════ INIT ═══════ */
+document.addEventListener('DOMContentLoaded',function(){
+    migrateData();
+    initMockData();
+    setTimeout(function(){document.getElementById('loading-screen').classList.add('hidden')},2000);
+    document.querySelectorAll('.nav-btn').forEach(function(b){b.addEventListener('click',function(){navigateTo(b.dataset.page)})});
+
+    /* Admin-gated add button */
+    document.getElementById('addFighterBtn').addEventListener('click',function(){requireAdmin(gatedAddFighter)});
+
+    /* Admin modal */
+    document.getElementById('admin-modal-close').addEventListener('click',function(){document.getElementById('admin-modal').classList.remove('open');pendingAction=null});
+    document.getElementById('admin-cancel').addEventListener('click',function(){document.getElementById('admin-modal').classList.remove('open');pendingAction=null});
+    document.getElementById('admin-submit').addEventListener('click',verifyAdmin);
+    document.getElementById('admin-password').addEventListener('keydown',function(e){if(e.key==='Enter')verifyAdmin()});
+    document.getElementById('admin-modal').addEventListener('click',function(e){if(e.target===e.currentTarget){document.getElementById('admin-modal').classList.remove('open');pendingAction=null}});
+
+    /* Fighter modal */
+    document.getElementById('modal-close').addEventListener('click',closeModal);
+    document.getElementById('modal-cancel').addEventListener('click',closeModal);
+    document.getElementById('fighter-modal').addEventListener('click',function(e){if(e.target===e.currentTarget)closeModal()});
+    document.getElementById('fighter-form').addEventListener('submit',function(e){
+        e.preventDefault();var id=document.getElementById('fighter-id').value;
+        var d={name:document.getElementById('fighter-name').value.trim(),nickname:document.getElementById('fighter-nickname').value.trim(),
+            avatar:document.getElementById('fighter-avatar').value.trim(),style:selectedStyle,
+            atk:document.getElementById('fighter-atk').value,def:document.getElementById('fighter-def').value,
+            spd:document.getElementById('fighter-spd').value,tec:document.getElementById('fighter-tec').value,
+            sta:document.getElementById('fighter-sta').value,mnt:document.getElementById('fighter-mnt').value};
+        if(!d.name){showToast('กรุณากรอกชื่อจอมยุทธ','error');return}
+        if(id)updateFighter(+id,d);else addFighter(d);closeModal();renderAll();
+    });
+    ['fighter-atk','fighter-def','fighter-spd','fighter-tec','fighter-sta','fighter-mnt'].forEach(function(id){
+        document.getElementById(id).addEventListener('input',updateRangeDisplays)});
+    document.getElementById('randomPairBtn').addEventListener('click',randomPair);
+    document.getElementById('manualPairBtn').addEventListener('click',function(){showToast('🚧 โหมดกำหนดคู่เอง กำลังพัฒนา','error')});
+
+    /* Make edit/delete require admin */
+    window.editFighter=function(id){requireAdmin(function(){gatedEditFighter(id)})};
+    window.deleteFighter=function(id){requireAdmin(function(){gatedDeleteFighter(id)})};
+
+    renderStyleSelector();renderHome();initQiParticles();
+});
+
+function initQiParticles(){const canvas=document.getElementById('qi-particles');if(!canvas)return;const ctx=canvas.getContext('2d');let particles=[];const colors=['rgba(212,168,67,','rgba(240,208,128,','rgba(196,30,58,'];function resize(){canvas.width=canvas.offsetWidth;canvas.height=canvas.offsetHeight}resize();window.addEventListener('resize',resize);function createParticle(){return{x:Math.random()*canvas.width,y:canvas.height+10,size:Math.random()*3+1,speedY:Math.random()*0.8+0.3,speedX:(Math.random()-0.5)*0.3,opacity:Math.random()*0.5+0.2,color:colors[Math.floor(Math.random()*colors.length)],wobble:Math.random()*Math.PI*2,wobbleSpeed:Math.random()*0.02+0.01}}for(let i=0;i<30;i++){const p=createParticle();p.y=Math.random()*canvas.height;particles.push(p)}function animate(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach((p,i)=>{p.y-=p.speedY;p.wobble+=p.wobbleSpeed;p.x+=Math.sin(p.wobble)*0.5+p.speedX;const fade=p.y<50?p.y/50:p.y>canvas.height-100?(canvas.height-p.y)/100:1;ctx.beginPath();ctx.arc(p.x,p.y,p.size,0,Math.PI*2);ctx.fillStyle=p.color+(p.opacity*fade)+')';ctx.fill();ctx.beginPath();ctx.arc(p.x,p.y,p.size*2,0,Math.PI*2);ctx.fillStyle=p.color+(p.opacity*fade*0.15)+')';ctx.fill();if(p.y<-10||p.x<-10||p.x>canvas.width+10){particles[i]=createParticle()}});requestAnimationFrame(animate)}animate()}
+</script>
+</body>
+</html>
